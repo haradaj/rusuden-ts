@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Incoming {
+  uniqueId     String    @id @db.VarChar(20)
+  callerId     String?   @db.VarChar(20)
+  callerIdName String?   @db.VarChar(40)
+  datetime     DateTime? @db.Timestamptz(6)
+  pushed       DateTime? @db.Timestamptz(6)
+}
+
+//model Voicemessages {
+//  uniqueid       Int                @id @default(autoincrement())
+//  msgnum         Int?
+//  dir            String?            @db.VarChar(80)
+//  context        String?            @db.VarChar(80)
+//  macrocontext   String?            @db.VarChar(80)
+//  callerid       String?            @db.VarChar(40)
+//  origtime       String?            @db.VarChar(40)
+//  duration       String?            @db.VarChar(20)
+//  flag           String?            @db.VarChar(8)
+//  mailboxuser    String?            @db.VarChar(80)
+//  mailboxcontext String?            @db.VarChar(80)
+//  recording      Unsupported("lo")?
+//  label          String?            @db.VarChar(30)
+//  read           Boolean?           @default(false)
+//  msg_id         String?            @db.VarChar(40)
+//  pushed         DateTime?          @db.Timestamptz(6)
+//}
