@@ -7,11 +7,17 @@ export const username = <string>process.env.ARI_USERNAME;
 export const password = <string>process.env.ARI_PASSWORD;
 export const appName = <string>process.env.ARI_APPNAME;
 export const announceWav = <string>process.env.APP_ANNWAV;
+export const waitTime = parseInt(<string>process.env.APP_WAITTIME);
+export const projectid =<string>process.env.FIRESTORE_PROJECTID;
+export const keyFilename = <string>process.env.FIRESTORE_KEYFILENAME;
 
 export default {
     url,
     username,
     password,
     appName,
-    announceWav
+    announceWav,
+    waitTime,
+    projectid,
+    keyFilename
 };

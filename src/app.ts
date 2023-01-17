@@ -6,9 +6,8 @@ const debug = Debug('rusuden-app');
 
 const main = async () => {
     try {
-        const filePath = './main/main';
-        const app = require(filePath);
-        debug(`Running ${filePath}...`);
+        const app = require('./main/main');
+        debug(`Running main...`);
         await app.default();
     } catch (err) {
         debug(err);

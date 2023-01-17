@@ -4,9 +4,13 @@ const prisma = new PrismaClient()
 
 async function main() {
   // ... you will write your Prisma Client queries here]
-  const allIncoming = await prisma.incoming.findMany()
-  console.log(allIncoming)
-}
+  const allIncoming = await prisma.incomingCall.findMany({
+    include: {
+      voicemessages: true
+    }
+  });
+  console.log(allIncoming);
+};
 
 main()
   .then(async () => {
