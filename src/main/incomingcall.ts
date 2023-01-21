@@ -25,11 +25,16 @@ export class IncomingCall {
                        });
     }
 
-    set duration(duration: number) {
+    
+    public get uniqueId() : string {
+        return this._uniqueId;
+    }
+    
+    public set duration(duration: number) {
         this._duration = duration;
     }
 
-    set recording(recording: string) {
+    public set recording(recording: string) {
         this._recording = recording;
     }
 
@@ -62,5 +67,4 @@ export class IncomingCall {
                     debug('recording save error.', err);
                 });
     }
-    
 }

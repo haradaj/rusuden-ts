@@ -8,9 +8,8 @@ import { url,
 } from '../config';
 import Debug from 'debug';
 const debug = Debug(appName);
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
 import { IncomingCall } from './incomingcall';
+import { MsgRecording } from './msgrecording';
 
 // TypeScript promises (async/await) version of the example published on project https://github.com/asterisk/node-ari-client.
 
@@ -79,6 +78,17 @@ export default async () => {
                     incomingCall.recording = newRecording.name;
                     incomingCall.duration = duration;
                     await incomingCall.recordingSave();
+
+                    const msgRecording = new MsgRecording();
+                    const StoredMessageOption = {
+                        "recordingName": newRecording.name
+                    };
+
+                    client.recordings.getStoredFile(StoredMessageOption)
+                    .then((binary) => {
+                        msgRecording.upload(incomingCall.uniqueId, binary); 
+                    })
+                    .catch((err) => debug('error in getStoredFile', err));
                 });
 
                 const messageOptions = {
@@ -92,6 +102,7 @@ export default async () => {
                 // Record a message
                 await channel.record(messageOptions, message);                
             });
+
         }
 
         // can also use client.start(['app-name'...]) to start multiple applications
