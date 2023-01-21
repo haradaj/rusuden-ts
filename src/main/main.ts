@@ -86,7 +86,7 @@ export default async () => {
 
                     client.recordings.getStoredFile(StoredMessageOption)
                     .then((binary) => {
-                        msgRecording.upload(incomingCall.uniqueId, binary); 
+                        msgRecording.upload(newRecording.name, binary); 
                     })
                     .catch((err) => debug('error in getStoredFile', err));
                 });
