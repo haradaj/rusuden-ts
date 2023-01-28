@@ -19,14 +19,15 @@ export default async () => {
         debug(`Connected to ${url}`);
         var incomingCall: IncomingCall;
 
-        // Use once to start the application
+        // Stasis start when a call is incoming
         client.on('StasisStart', async (event, incoming) => {
             await new Promise(resolve => setTimeout(resolve, waitTime)) // wait configured sec
             await incoming.answer()
                 .then(async () => saveIncoming(incoming))
                 .then(async () => play(incoming, announceWav))
                 .then(async () => recordingMsg(incoming))
-                .finally(async () => incoming.hangup());
+                .finally(async () => incoming.hangup())
+                .catch((err) => debug('session ended.'));
         });
 
         const play = (channel: Channel, sound: string) => {
@@ -61,35 +62,8 @@ export default async () => {
         }
 
         const recordingMsg = (channel: Channel) => {
-            return new Promise(async (resolve, reject) => {
+            return new Promise<void>(async (resolve, reject) => {
                 debug('recordingMsg entered.');
-                // Record message
-                const message = client.LiveRecording();
-                
-                message.once('RecordingFinished', async (event, newRecording) => {
-                    debug('message.once RecordingFinished event:', event);
-                    debug('message.once RecordingFinished newRecording:', newRecording);
-
-                    var duration: number = 0;
-                    if (newRecording.duration != null) {
-                        duration = newRecording.duration;
-                    };
-
-                    incomingCall.recording = newRecording.name;
-                    incomingCall.duration = duration;
-                    await incomingCall.recordingSave();
-
-                    const msgRecording = new MsgRecording();
-                    const StoredMessageOption = {
-                        "recordingName": newRecording.name
-                    };
-
-                    client.recordings.getStoredFile(StoredMessageOption)
-                    .then((binary) => {
-                        msgRecording.upload(newRecording.name, binary); 
-                    })
-                    .catch((err) => debug('error in getStoredFile', err));
-                });
 
                 const messageOptions = {
                     name: channel.id,
@@ -98,11 +72,42 @@ export default async () => {
                     ifExists: 'overwrite',
                     maxDurationSeconds: 300
                 };
-
-                // Record a message
-                await channel.record(messageOptions, message);                
+                const message = client.LiveRecording();
+                
+                // Record message
+                await channel.record(messageOptions, message)
+                .then((newRecording) => {
+                    debug('message.once RecordingFinished newRecording:', newRecording);
+    
+                    var duration: number = 0;
+                    if (newRecording.duration != null) {
+                        duration = newRecording.duration;
+                    };
+    
+                    incomingCall.recording = newRecording.name;
+                    incomingCall.duration = duration;
+                    incomingCall.recordingSave();
+    
+                    const msgRecording = new MsgRecording();
+                    const StoredMessageOption = {
+                        "recordingName": newRecording.name
+                    };
+    
+                    client.recordings.getStoredFile(StoredMessageOption)
+                    .then((binary) => {
+                        msgRecording.upload(newRecording.name, binary);
+                        resolve();
+                    })
+                    .catch((err) => {
+                        debug('error in getStoredFile', err);
+                        reject(err);
+                    });                    
+                })
+                .catch((err) => {
+                    debug('hungup befor recoding started.');
+                    resolve();
+                });
             });
-
         }
 
         // can also use client.start(['app-name'...]) to start multiple applications
