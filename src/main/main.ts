@@ -64,37 +64,32 @@ export default async () => {
         const recordingMsg = (channel: Channel) => {
             return new Promise<void>(async (resolve, reject) => {
                 debug('recordingMsg entered.');
-
-                const messageOptions = {
-                    name: channel.id,
-                    format: 'wav',
-                    beep: true,
-                    ifExists: 'overwrite',
-                    maxDurationSeconds: 300
-                };
-                const message = client.LiveRecording();
                 
-                // Record message
-                await channel.record(messageOptions, message)
-                .then((newRecording) => {
+                // Callback when recording finished.
+                const message = client.LiveRecording();
+                message.once('RecordingFinished', async (event, newRecording) => {
                     debug('message.once RecordingFinished newRecording:', newRecording);
-    
+                    
                     var duration: number = 0;
                     if (newRecording.duration != null) {
                         duration = newRecording.duration;
                     };
-    
+                    
+                    // Save recording info to incoming doc
                     incomingCall.recording = newRecording.name;
                     incomingCall.duration = duration;
                     incomingCall.recordingSave();
     
-                    const msgRecording = new MsgRecording();
+                    // Get stored recording file
                     const StoredMessageOption = {
                         "recordingName": newRecording.name
                     };
-    
+                    
                     client.recordings.getStoredFile(StoredMessageOption)
                     .then((binary) => {
+                        // got recording file successfully
+                        // then store to Google Storage
+                        const msgRecording = new MsgRecording();
                         msgRecording.upload(newRecording.name, binary);
                         resolve();
                     })
@@ -102,11 +97,17 @@ export default async () => {
                         debug('error in getStoredFile', err);
                         reject(err);
                     });                    
-                })
-                .catch((err) => {
-                    debug('hungup befor recoding started.');
-                    resolve();
                 });
+
+                // Start recording a message
+                const messageOptions = {
+                    name: channel.id,
+                    format: 'wav',
+                    beep: true,
+                    ifExists: 'overwrite',
+                    maxDurationSeconds: 300
+                };
+                await channel.record(messageOptions, message);
             });
         }
 
