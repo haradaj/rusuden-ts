@@ -9,7 +9,7 @@ import { url,
     maxSilenceSeconds
 } from '../config';
 import Debug from 'debug';
-const debug = Debug(process.argv[1].replace(/^.*[\\\/]/, ''));
+const debug = Debug('main.ts');
 import { IncomingCall } from './incomingcall';
 import { MsgRecording } from './msgrecording';
 

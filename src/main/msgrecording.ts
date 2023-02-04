@@ -3,7 +3,7 @@ import { projectId,
         keyFilename
 } from '../config';
 import Debug from 'debug';
-const debug = Debug(process.argv[1].replace(/^.*[\\\/]/, ''));
+const debug = Debug('msgrecording.ts');
 
 export class MsgRecording {
     private strage: Storage;
