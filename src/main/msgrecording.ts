@@ -1,16 +1,16 @@
 import {Storage} from '@google-cloud/storage';
-import { projectid,
+import { projectId,
         keyFilename
 } from '../config';
 import Debug from 'debug';
-const debug = Debug('MsgRecording');
+const debug = Debug(process.argv[1].replace(/^.*[\\\/]/, ''));
 
 export class MsgRecording {
     private strage: Storage;
 
     constructor() {
         this.strage = new Storage({
-                                    projectId: projectid,
+                                    projectId: projectId,
                                     keyFilename: keyFilename
                                 });
     }

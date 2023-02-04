@@ -8,7 +8,10 @@ export const password = <string>process.env.ARI_PASSWORD;
 export const appName = <string>process.env.ARI_APPNAME;
 export const announceWav = <string>process.env.APP_ANNWAV;
 export const waitTime = parseInt(<string>process.env.APP_WAITTIME);
-export const projectid =<string>process.env.GCP_PROJECTID;
+export const maxDurationSeconds = parseInt(<string>process.env.APP_MAXDURATIONSECONDS);
+export const maxSilenceSeconds = parseInt(<string>process.env.APP_MAXSILENCESECCONDS);
+
+export const projectId =<string>process.env.GCP_PROJECTID;
 export const keyFilename = <string>process.env.GCP_KEYFILENAME;
 
 export default {
@@ -18,6 +21,8 @@ export default {
     appName,
     announceWav,
     waitTime,
-    projectid,
+    maxDurationSeconds,
+    maxSilenceSeconds,
+    projectId,
     keyFilename
 };

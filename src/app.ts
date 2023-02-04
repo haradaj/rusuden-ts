@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config(); // SET UP ENVIROMENTAL VARIABLES BEFORE IMPORTING MODULES.
 
 import Debug from 'debug';
-const debug = Debug('rusuden-app');
+const debug = Debug(process.argv[1].replace(/^.*[\\\/]/, ''));
 
 const main = async () => {
     try {

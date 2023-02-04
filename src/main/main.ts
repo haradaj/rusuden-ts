@@ -4,10 +4,12 @@ import { url,
     password,
     appName,
     announceWav,
-    waitTime
+    waitTime,
+    maxDurationSeconds,
+    maxSilenceSeconds
 } from '../config';
 import Debug from 'debug';
-const debug = Debug(appName);
+const debug = Debug(process.argv[1].replace(/^.*[\\\/]/, ''));
 import { IncomingCall } from './incomingcall';
 import { MsgRecording } from './msgrecording';
 
@@ -105,7 +107,8 @@ export default async () => {
                     format: 'wav',
                     beep: true,
                     ifExists: 'overwrite',
-                    maxDurationSeconds: 300
+                    maxDurationSeconds: maxDurationSeconds,
+                    maxSilenceSeconds: maxDurationSeconds
                 };
                 await channel.record(messageOptions, message);
             });

@@ -1,9 +1,9 @@
 import { Firestore } from '@google-cloud/firestore';
-import { projectid,
+import { projectId,
          keyFilename
 } from '../config';
 import Debug from 'debug';
-const debug = Debug('incomingCall');
+const debug = Debug(process.argv[1].replace(/^.*[\\\/]/, ''));
 
 export class IncomingCall {
     private   db:           Firestore;
@@ -20,7 +20,7 @@ export class IncomingCall {
         this._callerIdName = callerIdName;
         this._datetime = datetime;
         this.db = new Firestore({
-                        projectId: projectid,
+                        projectId: projectId,
                         keyFilename: keyFilename
                        });
     }
