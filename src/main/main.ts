@@ -19,11 +19,15 @@ export default async () => {
     try {
         const client = await Ari.connect(url, username, password);
         debug(`Connected to ${url}`);
-        var incomingCall: IncomingCall;
+        var incomingCall: IncomingCall | null = null;
 
+
+        function sleep(ms: number): Promise<void> {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
         // Stasis start when a call is incoming
         client.on('StasisStart', async (event, incoming) => {
-            await new Promise(resolve => setTimeout(resolve, waitTime)) // wait configured sec
+            await sleep(waitTime); // 厳密な待ち合わせ
             await incoming.answer()
                 .then(async () => saveIncoming(incoming))
                 .then(async () => play(incoming, announceWav))
@@ -38,11 +42,15 @@ export default async () => {
                 playback.once('PlaybackFinished', (event, playback) => {
                     resolve(playback);
                 });
-                channel.play({ media: sound }, playback).catch(err => {
-                    reject(err);
-                });
+                channel.play({ media: sound }, playback)
+                    .then(() => resolve(playback))
+                    .catch(err => {
+                        debug('Error during playback:', err);
+                        reject(err);
+                    });
             });
         };
+        
 
         const saveIncoming = (channel: Channel) => {
             incomingCall = new IncomingCall(
