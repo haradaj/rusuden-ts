@@ -19,7 +19,7 @@ export default async () => {
     try {
         const client = await Ari.connect(url, username, password);
         debug(`Connected to ${url}`);
-        var incomingCall: IncomingCall | null = null;
+        var incomingCall: IncomingCall;
 
 
         function sleep(ms: number): Promise<void> {
