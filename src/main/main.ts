@@ -13,18 +13,17 @@ const debug = Debug('main.ts');
 import { IncomingCall } from './incomingcall';
 import { MsgRecording } from './msgrecording';
 
-// TypeScript promises (async/await) version of the example published on project https://github.com/asterisk/node-ari-client.
+function sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
+// TypeScript promises (async/await) version of the example published on project https://github.com/asterisk/node-ari-client.
 export default async () => {
     try {
         const client = await Ari.connect(url, username, password);
         debug(`Connected to ${url}`);
         var incomingCall: IncomingCall;
 
-
-        function sleep(ms: number): Promise<void> {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
         // Stasis start when a call is incoming
         client.on('StasisStart', async (event, incoming) => {
             await sleep(waitTime); // 厳密な待ち合わせ
