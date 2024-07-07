@@ -4,11 +4,12 @@ dotenv.config(); // SET UP ENVIROMENTAL VARIABLES BEFORE IMPORTING MODULES.
 import Debug from 'debug';
 const debug = Debug('app.ts');
 
+import app from './main/main'; // import を使用
+
 const main = async () => {
     try {
-        const app = require('./main/main');
         debug(`Running main...`);
-        await app.default();
+        await app();
     } catch (err) {
         debug(err);
     }
